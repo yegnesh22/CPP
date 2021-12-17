@@ -1,0 +1,23 @@
+/*
+ * Eggdrop.cpp
+ *
+ *  Created on: 15-Dec-2021
+ *      Author: yegnesh
+ */
+
+class Solution {
+public:
+	int eggDrop(int N, int K);
+};
+
+
+int main()
+{
+	Solution S;
+	int N, K;
+
+	cout << "Number of eggs : " << endl;
+	cin >> N;
+	cout << s.eggDrop(N, K) << endl;
+	return 0;
+}

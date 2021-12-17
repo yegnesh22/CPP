@@ -1,0 +1,17 @@
+/*
+ * triplet.cpp
+ *
+ *  Created on: 15-Dec-2021
+ *      Author: yegnesh
+ */
+
+#include <iostream>
+
+using namespace std;
+
+class Solution {
+public:
+
+};
+
+
