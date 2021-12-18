@@ -5,19 +5,9 @@
  *      Author: yegnesh
  */
 #include <iostream>
+#include "../../includes/arr.h"
 
 using namespace std;
-
-#define ARRAY_SIZE(x) (sizeof(x) / sizeof(x[0]))
-
-void swap(int &a, int &b)
-{
-	int t;
-
-	t = b;
-	b = a;
-	a = t;
-}
 
 void ssort(int a[], int n)
 {
@@ -25,7 +15,7 @@ void ssort(int a[], int n)
 
 	for (int i = 0; i < (n - 1); i++) {
 		pos = i;
-		for (int j = n; j > i; j--) {
+		for (int j = (i + 1); j < n; j++) {
 			if (a[pos] > a[j])
 				pos = j;
 		}
@@ -34,18 +24,8 @@ void ssort(int a[], int n)
 	}
 }
 
-void printArr(int a[], int n)
-{
-	for (int i = 0; i < n; i++)
-		cout << a[i] << " " << flush;
-	cout << endl;
-}
-
 int main()
 {
-	int arr[] = {64, 34, 25, 12, 22, 11, 90};
-	int n = ARRAY_SIZE(arr);
-
 	ssort(arr, n);
 	printArr(arr, n);
 
