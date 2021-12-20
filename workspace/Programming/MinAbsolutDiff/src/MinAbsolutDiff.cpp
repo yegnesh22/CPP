@@ -5,6 +5,7 @@
  *      Author: yegnesh
  */
 
+#include <algorithm>
 #include <iostream>
 #include <climits>
 #include <vector>
@@ -17,19 +18,21 @@ public:
 	vector<vector<int>> minimumAbsDifference(vector<int> &arr)
 	{
 		map<int, vector<vector<int>>> diffList;
+
+		sort(arr.begin(), arr.end());
 		int minDiff = INT_MAX;
 		int diff;
 
 		for (vector<int>::iterator it1 = arr.begin(); it1 != arr.end(); it1++) {
-			for (vector<int>::iterator it2 = (it1 + 1); it2 != arr.end(); it2++) {
-				diff = abs(*it1 - *it2);
-				if (diff < minDiff) {
-					minDiff = diff;
-				}
-
-				vector <int> p = { *it1, *it2 };
-				diffList[diff].push_back(p);
+			if ((it1 + 1) == arr.end())
+				break;
+			diff = abs(*it1 - *(it1 + 1));
+			if (diff < minDiff) {
+				minDiff = diff;
 			}
+
+			vector <int> p = { *it1, *(it1 + 1) };
+			diffList[diff].push_back(p);
 		}
 
 		return diffList[minDiff];
