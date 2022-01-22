@@ -22,59 +22,40 @@ struct TreeNode {
 	TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
 };
 
+/*
+ * Logic:
+ * Traverse each node, by recording the max and min values encountered
+ * in the path. Update the result (global variable) if its find a value
+ * greater than the difference encountered till now.
+ * Since result is a global variable, each call will update the final value.
+ * curMin and curMax being local variables, individual recursive calls carry
+ * their own copy of max and min in their path of ancestors.
+ */
+
 class Solution {
 public:
-    void printV(vector<int> a) {
-        cout << "( ";
-        for (vector<int>::iterator it = a.begin(); it != a.end(); it++)
-            cout << *it << " " << flush;
-        cout << " )" << endl;
-    }
-	vector<int> FindMinMax(TreeNode* Node) {
-		vector<int> v;
-		vector<int> result;
+	int result = 0;
+	void Traverse(TreeNode* n, int curMin, int curMax) {
+		if (n == nullptr)
+			return;
 
-		if (Node->left == nullptr && Node->right == nullptr) {
-			// Leaf
-			v.push_back(Node->val);
-			v.push_back(Node->val);
-            printV(v);
-			return v;
-		}
+		int m = max(abs(n->val - curMin), abs(n->val - curMax));
+		result = max(result, m);
 
-		if (Node->right != nullptr) {
-			vector<int> r = FindMinMax(Node->right);
-			v.insert(v.end(), r.begin(), r.end());
-		}
+		curMin = min(curMin, n->val);
+		curMax = max(curMax, n->val);
 
-		if (Node->left != nullptr) {
-			vector<int> l = FindMinMax(Node->left);
-			v.insert(v.end(), l.begin(), l.end());
-		}
+		Traverse(node->left, curMin, curMax);
+		Traverse(node->right, curMin, curMax);
 
-		v.push_back(Node->val);
-
-		result.push_back(min_element(v.begin(), v.end()));
-		result.push_back(max_element(v.begin(), v.end()));
-        printV(result);
-		return result;
+		return;
 	}
 
-    int maxAncestorDiff(TreeNode* root) {
-    	TreeNode* node = root;
-
-    	vector<int> l = FindMinMax(root->left);
-    	vector<int> r = FindMinMax(root->right);
-
-    	l.push_back(root->val);
-    	r.push_back(root->val);
-
-    	int ldiff = max_element(l.begin(), l.end()) - min_element(l.begin(), l.end());
-    	int rdiff = max_element(r.begin(), r.end()) - min_element(r.begin(), r.end());
-
-    	int max = ldiff > rdiff ? ldiff : rdiff;
-    	return max;
-    }
+	int maxAncestorDiff(TreeNode* root) {
+		result = 0;
+		Traverse(root, root->val, root->val);
+		return result;
+	}
 };
 
 
