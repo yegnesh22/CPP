@@ -58,7 +58,7 @@ public:
 
 	vector<int> preorderTraversal(TreeNode* root) {
 		/*
-		 * Preorder traversal: Left, Root, Right.
+		 * Preorder traversal: Root, Left, Right.
 		 */
 		vector<int> v;
 		vector<int> l;
@@ -67,8 +67,8 @@ public:
 		if (root == nullptr)
 			return v;
 
-		l = inorderTraversal(root->left);
-		r = inorderTraversal(root->right);
+		l = preorderTraversal(root->left);
+		r = preorderTraversal(root->right);
 
 		v.push_back(root->val);
 		v.insert(v.end(), l.begin(), l.end());
@@ -88,8 +88,8 @@ public:
 		if (root == nullptr)
 			return v;
 
-		l = inorderTraversal(root->left);
-		r = inorderTraversal(root->right);
+		l = postorderTraversal(root->left);
+		r = postorderTraversal(root->right);
 
 		v.insert(v.end(), l.begin(), l.end());
 		v.insert(v.end(), r.begin(), r.end());
