@@ -19,11 +19,12 @@ class Solution {
 public:
     bool carPooling(vector<vector<int>>& trips, int capacity) {
     	vector<int> seats(1001, capacity);
+    	int nt = trips.size();
 
-    	for (auto it = trips.begin(); it != trips.end(); it++) {
-    		for (int i = (*it)[1]; i < (*it)[2]; i++) {
-    			seats[i] -= (*it)[0];
-    			if (seats[i] < 0)
+    	for (int i = 0; i < nt; i++) {
+    		for (int j = trips[i][1]; j < trips[i][2]; j++) {
+    			seats[j] -= trips[i][0];
+    			if (seats[j] < 0)
     				return false;
     		}
     	}
