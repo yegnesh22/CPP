@@ -9,8 +9,6 @@
 
 bool DP::canJumpFromPosition(int pos, vector<int>& n)
 {
-	vector<int> nm;
-
 	if (m_memo[pos] != U) {
 		return (m_memo[pos] == G ? true: false);
 	}
@@ -32,14 +30,6 @@ bool DP::canJumpFromPosition(int pos, vector<int>& n)
 
 bool DP::canJump(vector<int>& nums)
 {
-	m_memo.clear();
-	m_memo.resize(nums.size());
-
-	for (int i = 0; i < nums.size(); i++)
-		m_memo[i] = U;
-
+    m_memo = vector<nodeType> (nums.size(),U);
 	return canJumpFromPosition(0, nums);
 }
-
-
-

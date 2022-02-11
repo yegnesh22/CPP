@@ -19,13 +19,10 @@ private:
 		U
 	} nodeType;
 
-	vector<nodeType> m_memo;
+	vector<nodeType> m_memo = vector<nodeType> (10000,U);
 	bool canJumpFromPosition(int pos, vector<int>& n);
 public:
     bool canJump(vector<int>& nums);
 };
-
-
-
 
 #endif /* DP_H_ */
