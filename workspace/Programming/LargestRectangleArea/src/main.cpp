@@ -9,9 +9,9 @@
 #include <ti.h>
 #include <Basic.h>
 #include <O1.h>
+#include <O2.h>
 
 vector<ti> t = {
-#ifdef DEBUG
 		{
 				.i = {2,1,5,6,2,3},
 				.eo = 10,
@@ -20,16 +20,20 @@ vector<ti> t = {
 				.i = {2,4},
 				.eo = 4,
 		},
-#endif
+		{
+				.i = {2,1,2},
+				.eo = 3,
+		},
 };
 
 int main()
 {
-	Solution *s = new BasicSolution();
+	//Solution *s = new BasicSolution();
 	//Solution *s = new O1();
+	Solution *s = new O2();
 
 	// Add a new testcase with 30000 entries
-	vector<int> newi (25969, 1);
+	vector<int> newi (25000, 1);
 	ti nt;
 	nt.i = newi;
 	nt.eo = newi.size();
