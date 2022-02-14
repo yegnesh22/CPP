@@ -25,6 +25,9 @@ struct ti {
 	int ao;
 };
 
+// Structure to hold the outbound flight and its cost.
+// Used to keep track of list of all destinations that can be
+// reached from a stop.
 struct OB {
 	int d;
 	int c;
@@ -32,6 +35,10 @@ struct OB {
 	OB(int destn, int cost): d(destn), c(cost) {}
 };
 
+// Structure that keeps track of the current stop, 
+// number of stopovers it took before reaching here,
+// cost to reach here.
+// This is data that gets pushed into the travel queue.
 struct stp {
 	int id;
 	int k;
@@ -53,11 +60,13 @@ int Solution::findCheapestPrice(int n, vector<vector<int>>& flights, int src, in
 	vector<int> costs;
 	queue<stp> stops;
 
+	// Create a lookup which lists all the outbound flights from one stop and their costs.
 	for(int i = 0; i < fdatal; i++) {
 		OB fd(flights[i][1], flights[i][2]);
 		OBL[flights[i][0]].push_back(fd);
 	}
 
+	// Staring from the source add all stops that can be reached from src and their costs to the queue.
 	stp f(src, 0, 0);
 	stops.push(f);
 	while (!stops.empty()) {
@@ -68,17 +77,19 @@ int Solution::findCheapestPrice(int n, vector<vector<int>>& flights, int src, in
 		for (int i = 0; i < obf.size(); i++) {
 			if (cs.id != dst && cs.k <= k) {
 				stp f(OBL[cs.id][i].d, cs.k+1, (OBL[cs.id][i].c + cs.c));
+				// If a destination can be reached at a lower cost, process that path further.
 				if (landed[f.id] > f.c) {
 					landed[f.id] = f.c;
 					stops.push(f);
 				}
 			}
 		}
-
+		// Every time the destination is reached, push the cost to the lookup variable.
 		if (cs.id == dst)
 			costs.push_back(cs.c);
 	}
 
+	// Return the least cost.
 	return costs.empty() ? -1: *min_element(costs.begin(), costs.end());
 }
 
