@@ -8,67 +8,47 @@
 #include <algorithm>
 #include <iostream>
 #include <vector>
-#include <map>
+#include <set>
 
 using namespace std;
 
 class Solution {
 public:
-	void printV(vector<int> v);
-    vector<int> findOriginalArray(vector<int>& changed);
+	template<typename T> void printD(T d);
+	vector<int> findOriginalArray(vector<int>& changed);
 };
 
-void Solution::printV(vector<int> v)
+template <typename T> void Solution::printD(T d)
 {
 	cout << "{" << flush;
-	for(int i = 0; i < v.size(); i++)
-		cout << v[i] << " " << flush;
+	for(auto it = d.begin(); it != d.end(); it++)
+		cout << *it << " " << flush;
 	cout << "}" << endl;
 }
 
 vector<int> Solution::findOriginalArray(vector<int>& changed)
 {
 	int ns = changed.size();
+	multiset<int> doubled;
 	vector<int> empty {};
 	vector<int> orig;
 	bool found;
-	int skey;
-	int s;
-	int e;
-	int m;
 
-	// Sort the array
-	sort(changed.begin(), changed.end(), [](int a, int b) {return a < b;});
-	while(!changed.empty()) {
-		skey = changed[0] * 2;
-		e = changed.size();
-		s = 0;
-		m = (e - s) / 2;
-		found = false;
-		// lookup for the double value by using binary search
-		// If found delete both current value and double value and insert the current value
-		// to the original array.
-		// If not found return an empty array indicating the array does not contain the
-		// doubled value of all the elements.
-		while (m > s && m < e) {
-			if (changed[m] < skey)
-				s = m;
-			else if (changed[m] > skey)
-				e = m;
-			else {
-				found = true;
-				orig.push_back(changed[0]);
-				changed.erase(changed.begin()+m);
-				changed.erase(changed.begin());
-				break;
-			}
-			m = s + (e - s) / 2;
+	if (ns & 1)
+		return {};
+
+	sort(changed.begin(), changed.end());
+	for (int i = 0; i <ns; i++) {
+		if (doubled.find(changed[i]) != doubled.end()) {
+			doubled.erase(doubled.equal_range(changed[i]).first);
+			continue;
+		} else {
+			doubled.insert(changed[i]*2);
+			orig.push_back(changed[i]);
 		}
-
-		if (found == false)
-			return empty;
 	}
-	return orig;
+
+	return doubled.empty() ? orig: empty;
 }
 
 #define result(x) ((x.ao == x.eo) ? "pass" : "fail")
@@ -91,10 +71,6 @@ vector<ti> t = {
 		{
 				.c = {0,0,0,0},
 				.eo = {0,0},
-		},
-		{
-				.c = {2,1,2,4,2,4},
-				.eo = {1,2,2},
 		},
 		{
 				.c = {20,6,4,8,12,10}, // {4,6,8,10,12,20}
@@ -3765,7 +3741,11 @@ vector<ti> t = {
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 ,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 				},
-		}
+		},
+		{
+				.c = {2,1,2,4,2,4},
+				.eo = {1,2,2},
+		},
 };
 
 int main()
