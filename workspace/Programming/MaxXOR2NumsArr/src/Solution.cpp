@@ -54,56 +54,73 @@ public:
     }
 };
 
-class O1: public Solution {
-private:
-	int maxPXOR(int V) {
-		int nbits = 0;
+#define NUM_BITS 32
 
-		while(V) {
-			V >>= 1;
-			nbits++;
-		}
-
-		if (nbits >= 32) {
-			cout << "1 -- returned " << INT_MAX << endl;
-			return INT_MAX;
-		}
-
-		cout << "2 -- returned " << ((1 << nbits) - 1) << endl;
-		return (1 << nbits) - 1;
-	}
-
-public:
-	int findMaximumXOR(vector<int>& nums) {
-		map<int, bool> lookup;
-		int ne = nums.size();
-		int mV = nums[0];
-		int mpXOR;
-		int lv;
-
-		for (int i = 0; i < ne; i++) {
-			mV = max(mV, nums[i]);
-			lookup.insert(pair<int, bool>(nums[i], true));
-		}
-
-		mpXOR = maxPXOR(mV);
-
-		while (mpXOR) {
-			cout << "check -- " << mpXOR << endl;
-			for (int i = 0; i < ne; i++) {
-				lv = mpXOR ^ nums[i];
-				if (lookup.find(lv) != lookup.end()) // value found
-					return mpXOR;
-			}
-			mpXOR--;
-		}
+struct BitWiseTrie {
+	BitWiseTrie* bit[2];
+	BitWiseTrie() {
+		bit[0] = nullptr;
+		bit[1] = nullptr;
 	}
 };
+
+class Trie: public Solution {
+private:
+	BitWiseTrie* TrieRoot;
+	void insert(int x);
+	int maxXOR(int n);
+public:
+	int findMaximumXOR(vector<int>& nums);
+};
+
+void Trie::insert(int x)
+{
+	BitWiseTrie* t = TrieRoot;
+	bitset<NUM_BITS> b(x);
+
+	for (int i = NUM_BITS-1; i >= 0; i--) {
+		if (t->bit[b[i]] == nullptr)
+			t->bit[b[i]] = new BitWiseTrie();
+		t = t->bit[b[i]];
+	}
+}
+
+int Trie::maxXOR(int n)
+{
+	BitWiseTrie* t = TrieRoot;
+	bitset<NUM_BITS> b(n);
+	bitset<NUM_BITS> mXOR(0);
+
+	for (int i = NUM_BITS-1; i >= 0; i--) {
+		if (t->bit[!b[i]] != nullptr) {
+			t = t->bit[!b[i]];
+			mXOR[i] = 1;
+		} else
+			t = t->bit[b[i]];
+	}
+	return (int)mXOR.to_ulong();
+}
+
+int Trie::findMaximumXOR(vector<int>& nums)
+{
+	int ns = nums.size();
+	int mXOR = 0;
+
+	// Create the trie
+	TrieRoot = new BitWiseTrie();
+	for (int i = 0; i < ns; i++)
+		insert(nums[i]);
+
+	for (int i = 0; i < ns; i++)
+		mXOR = max(mXOR, maxXOR(nums[i]));
+
+	return mXOR;
+}
 
 int main()
 {
 	//Solution *s = new BasicSolution();
-	Solution *s = new O1();
+	Solution *s = new Trie();
 
 	for (int i = 0; i < t.size(); i++) {
 		t[i].ao = s->findMaximumXOR(t[i].nums);
