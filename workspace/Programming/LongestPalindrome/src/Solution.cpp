@@ -1,87 +1,93 @@
 /*
  * Solution.cpp
  *
- *  Created on: 31-Dec-2021
- *      Author: yegnesh
+ *  Created on: Feb 18, 2022
+ *      Author: ysiyer
  */
 
+#include <algorithm>
 #include <iostream>
 #include <vector>
-#include <map>
 
 using namespace std;
 
-//#define DEBUG
-
 class Solution {
 public:
-    string longestPalindrome(string s) {
-    	int length;
-    	int ml = 1;
+	int getPalindromeLength(string s, int b, int e);
+    string longestPalindrome(string s);
+};
 
-    	length = s.length();
-    	for (int i = (length - ml + 1); i >= 1; i--) {
-#ifdef DEBUG
-    		cout << "i = " << i << endl;
-#endif
-    		for (int j = 0; j < (length - i + 1); j++) {
-#ifdef DEBUG
-    			cout << "j = " << j << endl;
-#endif
-    			string sst = s.substr(j, i);
-    			int sstlen = sst.length();
-    			int start, end;
-    			bool found = true;
-#ifdef DEBUG
-    			cout << "sst:" << sst << endl;
-#endif
-    			start = 0;
-    			end = sstlen - 1;
-    			while (start <= end) {
-#ifdef DEBUG
-    				cout << sst[start] << "==" << sst[end] << endl;
-#endif
-    				if (sst[start] != sst[end]) {
-    					ml = max(ml, (sstlen - end));
-#ifdef DEBUG
-    					cout << "ml=" << ml << endl;
-    					//char c = getchar();
-#endif
-    					found = false;
-    					break;
-    				}
-    				start++;
-    				end--;
-    			}
+int Solution::getPalindromeLength(string s, int b, int e)
+{
+	int left = b, right = e;
 
-    			if (found)
-    				return sst;
-    		}
-    	}
-    	return s.substr(0,1);
-    }
+	while ((left >= 0) && (right < s.length()) && (s[left] == s[right])) {
+		left--;
+		right++;
+	}
+
+	return right - left - 1;
+}
+
+string Solution::longestPalindrome(string s)
+{
+	if (s.empty() || s.length() < 1)
+		return "";
+
+	int b = 0, e = 0;
+	for (int i = 0; i < s.length(); i++) {
+		int len1 = getPalindromeLength(s, i, i);
+		int len2 = getPalindromeLength(s, i, i+1);
+		int len = max(len1, len2);
+		if (len > (e - b)) {
+			b = i - (len - 1) / 2;
+			e = i + len / 2;
+		}
+	}
+
+	return s.substr(b, e - b + 1);
+}
+
+#define result(x) ((x.ao == x.eo) ? "pass" : "fail")
+
+struct ti {
+	string s;
+	string eo;
+	string ao;
+};
+
+vector<ti> t = {
+		{
+				.s = "babad",
+				.eo = "aba",
+		},
+		{
+				.s = "cbbd",
+				.eo = "bb",
+		},
+		{
+				.s = "ac",
+				.eo = "c",
+		},
+		{
+				.s = "bb",
+				.eo = "bb",
+		},
+		{
+				.s = "abb",
+				.eo = "bb",
+		},
 };
 
 int main()
 {
-	Solution s;
+	Solution*s = new Solution();
 
-	vector<string> t = {
-			//"babad",
-			//"cbbd",
-			//"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabcaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-			//"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-			"rgczcpratwyqxaszbuwwcadruayhasynuxnakpmsyhxzlnxmdtsqqlmwnbxvmgvllafrpmlfuqpbhjddmhmbcgmlyeypkfpreddyencsdmgxysctpubvgeedhurvizgqxclhpfrvxggrowaynrtuwvvvwnqlowdihtrdzjffrgoeqivnprdnpvfjuhycpfydjcpfcnkpyujljiesmuxhtizzvwhvpqylvcirwqsmpptyhcqybstsfgjadicwzycswwmpluvzqdvnhkcofptqrzgjqtbvbdxylrylinspncrkxclykccbwridpqckstxdjawvziucrswpsfmisqiozworibeycuarcidbljslwbalcemgymnsxfziattdylrulwrybzztoxhevsdnvvljfzzrgcmagshucoalfiuapgzpqgjjgqsmcvtdsvehewrvtkeqwgmatqdpwlayjcxcavjmgpdyklrjcqvxjqbjucfubgmgpkfdxznkhcejscymuildfnuxwmuklntnyycdcscioimenaeohgpbcpogyifcsatfxeslstkjclauqmywacizyapxlgtcchlxkvygzeucwalhvhbwkvbceqajstxzzppcxoanhyfkgwaelsfdeeviqogjpresnoacegfeejyychabkhszcokdxpaqrprwfdahjqkfptwpeykgumyemgkccynxuvbdpjlrbgqtcqulxodurugofuwzudnhgxdrbbxtrvdnlodyhsifvyspejenpdckevzqrexplpcqtwtxlimfrsjumiygqeemhihcxyngsemcolrnlyhqlbqbcestadoxtrdvcgucntjnfavylip",
-	};
-
-	for (auto it = t.begin(); it != t.end(); it++) {
-#ifdef DEBUG
-		cout << "#######################" << endl;
-		cout << (*it).length() << endl;
-#endif
-		string result = s.longestPalindrome(*it);
-		cout << result << endl;
-		cout << result.length() << endl;
+	for (int i = 0; i < t.size(); i++) {
+		t[i].ao = s->longestPalindrome(t[i].s);
+		cout << t[i].ao << endl;
+		cout << i << " -- " << result(t[i]) << endl;
 	}
+
 	return 0;
 }
