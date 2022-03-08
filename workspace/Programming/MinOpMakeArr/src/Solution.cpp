@@ -7,12 +7,16 @@
 
 #include <iostream>
 #include <vector>
+#include <queue>
 #include <set>
 #include <map>
 
 using namespace std;
 
-struct compare {
+//#define DEBUG
+
+#if 0
+struct compareS {
 	bool operator() (const pair<int, int>& p1, const pair<int, int>& p2) const
 	{
 		if (p1.second == p2.second)
@@ -40,8 +44,8 @@ int Solution::minimumOperations(vector<int>& nums)
 			even[nums[i]]++;
 	}
 
-	set<pair<int, int>, compare> odd_set(odd.begin(), odd.end());
-	set<pair<int, int>, compare> even_set(even.begin(), even.end());
+	set<pair<int, int>, compareS> odd_set(odd.begin(), odd.end());
+	set<pair<int, int>, compareS> even_set(even.begin(), even.end());
 
 	auto oe = odd_set.begin();
 	auto ee = even_set.begin();
@@ -66,6 +70,63 @@ int Solution::minimumOperations(vector<int>& nums)
 	ops = nl - (oe->second + ee->second);
 	return ops;
 }
+#else
+struct compareQ {
+	bool operator() (const pair<int, int>& p1, const pair<int, int>& p2) const
+	{
+		if (p1.second == p2.second)
+			return p1.first > p2.first;
+		return p1.second < p2.second;
+	}
+};
+
+class Solution {
+public:
+	int minimumOperations(vector<int>& nums);
+};
+
+int Solution::minimumOperations(vector<int>& nums)
+{
+	int nl = nums.size();
+	map<int, int> even;
+	map<int, int> odd;
+	int fixC;
+
+	if (nl <= 1)
+		return 0;
+
+	for (int i = 0; i < nl; i++) {
+		if (i & 1)
+			odd[nums[i]]++;
+		else
+			even[nums[i]]++;
+	}
+
+	priority_queue<pair<int, int>, vector<pair<int, int>>, compareQ> odd_wq (odd.begin(), odd.end());
+	priority_queue<pair<int, int>, vector<pair<int, int>>, compareQ> even_wq (even.begin(), even.end());
+
+	auto oe = odd_wq.top();
+	auto ee = even_wq.top();
+
+	odd_wq.pop();
+	even_wq.pop();
+
+	if (oe.first == ee.first) {
+		int s1 = 0, s2 = 0;
+		if (!even_wq.empty())
+			s1 = oe.second + even_wq.top().second;
+		if (!odd_wq.empty())
+			s2 = ee.second + odd_wq.top().second;
+		if (s1 == 0 && s2 == 0)
+			fixC = max(oe.second, ee.second);
+		else
+			fixC = max(s1, s2);
+	} else
+		fixC = oe.second + ee.second;
+
+	return nl - fixC;
+}
+#endif
 
 int main()
 {
@@ -78,6 +139,7 @@ int main()
 	//vector<int> v ({2,3,4,1,4,2,2,2});
 	//vector<int> v ({2,1,3,1,1,3,1,3});
 	vector<int> v ({1,3,4,3,3,2,3,3,2,2,3});
+	//vector<int> v ({1,2,2,2,2});
 
 	int ao = s->minimumOperations(v);
 	cout << "ao:" << ao << endl;
