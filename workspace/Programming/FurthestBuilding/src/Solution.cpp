@@ -11,6 +11,43 @@
 
 using namespace std;
 
+#define PQ
+
+#ifdef PQ
+
+class Solution {
+public:
+	int furthestBuilding(vector<int>& heights, int bricks, int ladders) {
+		priority_queue<int, vector<int>, greater<int>> ljumps;
+		int hs = heights.size();
+		int b = bricks;
+		int diff;
+
+		for (int i = 1; i < hs; i++) {
+			diff = ((heights[i] - heights[i-1]) > 0) ? (heights[i] - heights[i-1]) : 0;
+			if (diff == 0)
+				continue;
+			if (ljumps.size() < ladders) {
+				ljumps.push(diff);
+				continue;
+			}
+			if (!ljumps.empty() && ljumps.top() < diff) {
+				b -= ljumps.top();
+				ljumps.pop();
+				ljumps.push(diff);
+			} else
+				b -= diff;
+
+			if (b < 0)
+				return i-1;
+		}
+
+		return hs-1;
+	}
+};
+
+#else
+	
 class Solution {
 public:
 	int furthestBuilding(vector<int>& heights, int bricks, int ladders);
@@ -71,7 +108,7 @@ int Solution::furthestBuilding(vector<int>& heights, int bricks, int ladders)
 	//cout << "D. returning " << i - 1 << endl;
 	return i-1;
 }
-
+#endif
 
 #define result(x) ((x.ao == x.eo) ? "pass" : "fail")
 
