@@ -1,0 +1,92 @@
+#include "Solution.h"
+#include "input.h"
+
+stack<int> tstack;
+extern vector<ti> tests;
+
+void printS(set<int> s) {
+	for (set<int>::iterator it = s.begin(); it != s.end(); it++)
+		cout << *it << " " << flush;
+	cout << endl;
+}
+
+int getMaxVisitableWebpages(int N, vector<int>& L) {
+	// write your code here
+	vector<set<int>>* mC = new vector<set<int>> (N, set<int>{});
+	int from, to;
+	int max = 0;
+#ifndef DEBUG
+	int lg = 0;
+#endif
+
+	for (int i = 1; i <= N; i++) {
+		if (mC->at(i-1).empty()) {
+			tstack.push(i-1);
+#ifdef DEBUG
+			cout << "root pushing " << i << endl;
+#endif
+			while (!tstack.empty()) {
+				from = tstack.top();
+#ifdef DEBUG
+				cout << "tstack.top:" << from << endl;
+#endif
+				mC->at(from).insert(from);
+				to = L[tstack.top()] - 1;
+#ifndef DEBUG
+				lg++;
+				if (lg == 10000) {
+					cout << from+1 << " : " << to+1 << endl; 
+					lg = 0;
+				}
+#endif
+				if (mC->at(to).empty()) {
+#ifdef DEBUG
+					cout << "sub pushing " << to+1 << endl;
+#endif
+					tstack.push(to);
+					continue;
+				}
+				
+#ifdef DEBUG
+				cout << "##############################" << endl;
+				cout << "popping " << (tstack.top()+1) << endl;
+				cout << from+1 << " : " << to+1 << endl; 
+				printS(mC->at(to));
+#endif
+				mC->at(from) = mC->at(to);
+				mC->at(from).insert(from);
+#ifdef DEBUG
+				printS(mC->at(from));
+				cout << "##############################" << endl;
+#endif
+				tstack.pop();
+			}
+		}
+#ifdef DEBUG
+		cout << i << " set --> " << flush; 
+		printS(mC->at(i-1));
+#endif
+		int count = mC->at(i-1).size(); 
+		if (max < count)
+			max = count;
+	}
+
+#ifdef DEBUG
+	cout << "max:" << max << endl;
+#endif
+	return max;
+}
+
+int main()
+{
+	int i = 1;
+
+	for (auto t: tests) {
+		t.AO = getMaxVisitableWebpages(t.N, t.L);
+		assert(t.EO == t.AO);
+		cout << i++ << "-- pass" << endl;
+	}
+
+	return 0;
+}
+

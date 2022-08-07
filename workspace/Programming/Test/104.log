@@ -1,0 +1,26 @@
+Processing level 0
+isQ empty: 0
+Processing level 1
+isQ empty: 0
+Processing level 2
+isQ empty: 0
+Processing level 3
+isQ empty: 1
+Returning from level 3
+Returning from level 2
+Returning from level 1
+Returning from level 0
+0 -- pass
+Processing level 0
+isQ empty: 0
+Processing level 1
+isQ empty: 0
+Processing level 2
+isQ empty: 0
+Processing level 3
+isQ empty: 1
+Returning from level 3
+Returning from level 2
+Returning from level 1
+Returning from level 0
+1 -- pass

@@ -1,0 +1,1 @@
+cmd_/home/yegnesh/test/lkml/i2c_dummy/busses/i2c-dummy.ko := ld -r -m elf_x86_64 -T /usr/src/linux-headers-3.2.0-80-generic/scripts/module-common.lds --build-id  -o /home/yegnesh/test/lkml/i2c_dummy/busses/i2c-dummy.ko /home/yegnesh/test/lkml/i2c_dummy/busses/i2c-dummy.o /home/yegnesh/test/lkml/i2c_dummy/busses/i2c-dummy.mod.o

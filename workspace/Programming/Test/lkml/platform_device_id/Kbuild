@@ -1,0 +1,2 @@
+obj-m := intel_pmic_thermal.o
+obj-m += thermal_add_devices.o
